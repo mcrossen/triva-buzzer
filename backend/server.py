@@ -91,9 +91,9 @@ if __name__ == '__main__':
                 scores[player] = scores.get(player, 0) + 100
                 with buzz_queue.mutex:
                     buzz_queue.queue.clear()
-            click.echo("{player} score now {score}".format(
-                player=player,
-                score=scores.get(player, 0),
-            ))
+                click.echo("{player} score now {score}".format(
+                    player=player,
+                    score=scores.get(player, 0),
+                ))
     except KeyboardInterrupt:
         exit(0)
