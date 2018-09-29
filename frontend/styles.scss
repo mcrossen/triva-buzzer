@@ -1,18 +1,17 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css");
 
-$mdc-theme-primary: #9E9E9E;
+$mdc-theme-primary: #03A9F4;
 $mdc-theme-on-primary: #FFFFFF;
-$mdc-theme-secondary: #4CAF50;
-$mdc-theme-on-secondary: #4CAF50;
-$mdc-theme-background: #ffffff;
+$mdc-theme-background: #303F9F;
 
 @import "@material/button/mdc-button";
 @import "@material/textfield/mdc-text-field";
 
 html {
-  heigh: 100%;
+  height: 100%;
   background-color: $mdc-theme-background;
+  color: $mdc-theme-on-primary
 }
 body {
   height: 85vh;
