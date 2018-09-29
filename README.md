@@ -6,10 +6,10 @@ On Ubuntu, install vlc media player:
 `sudo apt-get install vlc`
 
 Then install the repository dependencies:
-`pip install -r requirements.txt`
+`sudo pip3 install -r backend/requirements.txt`
 
 ## Usage
-run `./server.py`
+run `./backend/server.py`
 
 then visit [http://localhost:8080](http://localhost:8080) for the buzzer.
 
