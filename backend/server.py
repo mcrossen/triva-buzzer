@@ -11,8 +11,9 @@ import subprocess
 SERVER_DIR = path.abspath(path.dirname(__file__))
 DEFAULT_HOST='0.0.0.0'
 DEFAULT_PORT=8080
-DEFAULT_LANDING_PAGE=path.join(SERVER_DIR, "../frontend/index.html")
-DEFAULT_SCOREBOARD_PAGE=path.join(SERVER_DIR, "../frontend/scoreboard.html")
+DEFAULT_LANDING_PAGE=path.join(SERVER_DIR, "../frontend/dist/index.html")
+DEFAULT_SCOREBOARD_PAGE=path.join(SERVER_DIR,
+    "../frontend/dist/scoreboard.html")
 DEFAULT_BUZZ_SOUND=path.join(SERVER_DIR, "ding.mp3")
 app = Flask(__name__)
 buzz_queue = Queue()
@@ -67,7 +68,7 @@ def ding() -> str:
 @app.route("/buzz", methods = ['POST'])
 def buzz() -> str:
     """ someone just clicked the buzzer """
-    buzz_queue.put(request.headers.get('player'))
+    buzz_queue.put(request.args.get('player'))
     ding()
     return "BUZZ!!"
 

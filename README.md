@@ -2,8 +2,11 @@
 quck and hacky website to replace trivia buzzers for group games
 
 ## Installation
-On Ubuntu, install vlc media player:
-`sudo apt-get install vlc`
+On Ubuntu, install vlc media player and npm:
+`sudo apt-get install vlc npm`
+
+Build the frontend:
+`cd frontend && npm run build && cd ..`
 
 Then install the repository dependencies:
 `sudo pip3 install -r backend/requirements.txt`
