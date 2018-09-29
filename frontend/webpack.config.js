@@ -1,19 +1,19 @@
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 const FlowStatusWebpackPlugin = require('flow-status-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const path = require('path')
 const webpack = require('webpack')
+const WebpackCleanPlugin = require('webpack-clean');
 
 module.exports = {
-  devtool: 'eval-source-map',
   entry: [
-    'babel-polyfill',
-    path.resolve(__dirname, 'index.js')
+    path.resolve(__dirname, 'index.js'),
+    path.resolve(__dirname, 'styles.scss')
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index_bundle.js',
+    filename: 'app.js',
     publicPath: '/',
   },
   resolve: {
@@ -29,43 +29,51 @@ module.exports = {
       },
       {
         test: /(\.scss|\.css)$/,
-        use: ['css-hot-loader'].concat(
-          ExtractTextWebpackPlugin.extract({fallback: 'style-loader', use: [
-            'css-loader',
-            'sass-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: () => [
-                  'postcss-import',
-                  {loader: 'autoprefixer', options: { add: false, browsers: [] }},
-                  'postcss-next',
-                  'cssnano'
-                ]
-              }
+        use: ExtractTextWebpackPlugin.extract({fallback: 'style-loader', use: [
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                'postcss-import',
+                {loader: 'autoprefixer', options: { add: false, browsers: [] }},
+                'postcss-next',
+                'cssnano'
+              ]
             }
-          ]})
-        )
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              includePaths: ['./node_modules'],
+            }
+          },
+        ]})
       }
     ]
   },
   plugins: [
+    new ExtractTextWebpackPlugin('app.css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       inlineSource: '.(js|css)$',
-      title: 'Trivia'
+      template: 'index.html'
     }),
     new HtmlWebpackInlineSourcePlugin(),
     new FlowStatusWebpackPlugin({
       restartFlow: true
     }),
-    new webpack.optimize.UglifyJsPlugin({
+    new WebpackCleanPlugin([
+      'app.css',
+      'app.js'
+    ], {basePath: path.join(__dirname, 'dist')})
+    /*new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       comments: false,
       compress: {
-        //drop_console: true,
+        drop_console: true,
         warnings: false
       }
-    })
+    })*/
   ]
 }
