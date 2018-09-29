@@ -5,16 +5,18 @@ from os import path
 from queue import Queue
 from threading import Thread
 import click
+import json
 import subprocess
 
 
 SERVER_DIR = path.abspath(path.dirname(__file__))
-DEFAULT_HOST='0.0.0.0'
-DEFAULT_PORT=8080
-DEFAULT_LANDING_PAGE=path.join(SERVER_DIR, "../frontend/dist/index.html")
-DEFAULT_SCOREBOARD_PAGE=path.join(SERVER_DIR,
+DEFAULT_HOST = '0.0.0.0'
+DEFAULT_PORT = 8080
+DEFAULT_LANDING_PAGE = path.join(SERVER_DIR, "../frontend/dist/index.html")
+DEFAULT_SCOREBOARD_PAGE = path.join(SERVER_DIR,
     "../frontend/dist/scoreboard.html")
-DEFAULT_BUZZ_SOUND=path.join(SERVER_DIR, "ding.mp3")
+DEFAULT_BUZZ_SOUND = path.join(SERVER_DIR, "ding.mp3")
+SCORE_BACKUP = path.join(SERVER_DIR, "../score.json")
 app = Flask(__name__)
 buzz_queue = Queue()
 scores = {}
@@ -82,6 +84,10 @@ if __name__ == '__main__':
     server = Thread(target=run_server, daemon=True)
     server.start()
 
+    if path.exists(SCORE_BACKUP):
+        with open(SCORE_BACKUP, 'r') as file:
+            scores = json.loads(file.read())
+
     try:
         while True:
             player = buzz_queue.get()
@@ -89,6 +95,8 @@ if __name__ == '__main__':
                 player=player,
             )):
                 scores[player] = scores.get(player, 0) + 100
+                with open(SCORE_BACKUP, 'w') as file:
+                    file.write(json.dumps(scores))
                 with buzz_queue.mutex:
                     buzz_queue.queue.clear()
                 click.echo("{player} score now {score}".format(
