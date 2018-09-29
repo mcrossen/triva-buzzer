@@ -2,6 +2,8 @@
 from flask import Flask, request
 from cachetools.func import ttl_cache
 from os import path
+from queue import Queue
+from threading import Thread
 import click
 import subprocess
 
@@ -12,6 +14,8 @@ DEFAULT_PORT=8080
 DEFAULT_LANDING_PAGE=path.join(SERVER_DIR, "../frontend/index.html")
 DEFAULT_BUZZ_SOUND=path.join(SERVER_DIR, "ding.mp3")
 app = Flask(__name__)
+buzz_queue = Queue()
+scores = {}
 
 
 @click.command()
@@ -42,17 +46,36 @@ def index() -> str:
 def ding() -> str:
     """ play a sound when someone buzzes in """
     # sudo apt-get install cvlc
-    cmd = "cvlc --play-and-exit " + app.config.get("sound")
+    cmd = "cvlc --play-and-exit {sound} 2> /dev/null".format(
+        sound=app.config.get("sound")
+    )
     subprocess.Popen(cmd, shell=True) # non-blocking
 
 
 @app.route("/buzz", methods = ['POST'])
 def buzz() -> str:
     """ someone just clicked the buzzer """
-    click.echo(request.form.get('player'))
+    buzz_queue.put(request.headers.get('player'))
     ding()
     return "BUZZ!!"
 
 
 if __name__ == '__main__':
-    run_server()
+    server = Thread(target=run_server, daemon=True)
+    server.start()
+
+    try:
+        while True:
+            player = buzz_queue.get()
+            if click.confirm("did player ({player}) answer correctly?".format(
+                player=player,
+            )):
+                scores[player] = scores.get(player, 0) + 100
+                with buzz_queue.mutex:
+                    buzz_queue.queue.clear()
+            click.echo("{player} score now {score}".format(
+                player=player,
+                score=scores.get(player, 0),
+            ))
+    except KeyboardInterrupt:
+        exit(0)

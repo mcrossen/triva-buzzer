@@ -9,7 +9,7 @@ Then install the repository dependencies:
 `sudo pip3 install -r backend/requirements.txt`
 
 ## Usage
-run `./backend/server.py`
+run `./backend/server.py 2>/dev/null`
 
 then visit [http://localhost:8080](http://localhost:8080) for the buzzer.
 
