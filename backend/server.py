@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, request
+from flask import Flask, request, jsonify, Response
 from cachetools.func import ttl_cache
 from os import path
 from queue import Queue
@@ -12,6 +12,7 @@ SERVER_DIR = path.abspath(path.dirname(__file__))
 DEFAULT_HOST='0.0.0.0'
 DEFAULT_PORT=8080
 DEFAULT_LANDING_PAGE=path.join(SERVER_DIR, "../frontend/index.html")
+DEFAULT_SCOREBOARD_PAGE=path.join(SERVER_DIR, "../frontend/scoreboard.html")
 DEFAULT_BUZZ_SOUND=path.join(SERVER_DIR, "ding.mp3")
 app = Flask(__name__)
 buzz_queue = Queue()
@@ -24,12 +25,16 @@ scores = {}
 @click.option('--landing-page', 'page',
     default=DEFAULT_LANDING_PAGE,
     help='html page to serve up')
+@click.option('--scoreboard-page', 'score',
+    default=DEFAULT_SCOREBOARD_PAGE,
+    help='html file for the scoreboard')
 @click.option('--buzz-sound', 'sound',
     default=DEFAULT_BUZZ_SOUND,
     help='audio to play when player buzzes')
-def run_server(host: str, port: int, page: str, sound: str) -> None:
+def run_server(host: str, port: int, page: str, score: str, sound: str) -> None:
     """easy web interface to control gate and garage doors"""
     app.config['index'] = page
+    app.config['score'] = score
     app.config['sound'] = sound
     app.run(host=host, port=port)
 
@@ -39,6 +44,13 @@ def run_server(host: str, port: int, page: str, sound: str) -> None:
 def index() -> str:
     """ return the contents of index.html in the response body """
     with open(app.config.get("index"), 'r') as file:
+        return file.read()
+
+
+@app.route("/scoreboard")
+def scoreboard() -> str:
+    """ return the contents of scoreboard.html in the response body """
+    with open(app.config.get("scoreboard"), 'r') as file:
         return file.read()
 
 
@@ -58,6 +70,11 @@ def buzz() -> str:
     buzz_queue.put(request.headers.get('player'))
     ding()
     return "BUZZ!!"
+
+
+@app.route("/score")
+def score() -> Response:
+    return jsonify(scores)
 
 
 if __name__ == '__main__':
