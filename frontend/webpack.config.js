@@ -5,6 +5,7 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 const path = require('path')
 const webpack = require('webpack')
 const WebpackCleanPlugin = require('webpack-clean');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: [
@@ -59,6 +60,11 @@ module.exports = {
       inlineSource: '.(js|css)$',
       template: 'index.html'
     }),
+    new HtmlWebpackPlugin({
+      filename: 'scoreboard.html',
+      inlineSource: '.(js|css)$',
+      template: 'scoreboard.html'
+    }),
     new HtmlWebpackInlineSourcePlugin(),
     new FlowStatusWebpackPlugin({
       restartFlow: true
@@ -67,13 +73,5 @@ module.exports = {
       'app.css',
       'app.js'
     ], {basePath: path.join(__dirname, 'dist')})
-    /*new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      comments: false,
-      compress: {
-        drop_console: true,
-        warnings: false
-      }
-    })*/
   ]
 }
