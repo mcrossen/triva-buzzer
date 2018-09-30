@@ -37,7 +37,7 @@ scores = {}
 def run_server(host: str, port: int, page: str, score: str, sound: str) -> None:
     """easy web interface to control gate and garage doors"""
     app.config['index'] = page
-    app.config['score'] = score
+    app.config['scoreboard'] = score
     app.config['sound'] = sound
     app.run(host=host, port=port)
 
