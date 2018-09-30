@@ -6,7 +6,6 @@
 
 [ignore]
 .*/node_modules\/[^\/]*\/node_modules/*
-.*/database.rules.json
 
 [include]
 

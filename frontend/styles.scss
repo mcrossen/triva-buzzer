@@ -7,21 +7,22 @@ $mdc-theme-background: #303F9F;
 
 @import "@material/button/mdc-button";
 @import "@material/textfield/mdc-text-field";
+@import "@material/list/mdc-list";
+@import "@material/card/mdc-card";
 
 html {
   height: 100%;
   background-color: $mdc-theme-background;
   color: $mdc-theme-on-primary
 }
-body {
-  height: 85vh;
-}
 
 body {
+  height: 85vh;
   font-family: 'Roboto';
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin: 0;
   padding-top: 0.1px;
 }
@@ -59,6 +60,23 @@ body {
       width: 300px;
       border-radius: 50px;
       margin: 3px;
+    }
+  }
+}
+
+.page-3 {
+  .mdc-card {
+    background-color: $mdc-theme-primary;
+    width: 300px;
+  }
+  .mdc-list {
+    .mdc-list-item {
+      & > .left {
+        max-width: 220px;
+        overflow-x: hidden;
+      }
+      justify-content: space-between;
+      padding-right: 30px;
     }
   }
 }
