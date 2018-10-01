@@ -25,7 +25,7 @@ if (window.location.pathname == '/') {
       while (list.firstChild) {
         list.removeChild(list.firstChild);
       }
-      Object.keys(this.response).forEach((key) => {
+      Object.keys(this.response).sort((a, b) => this.response[b] - this.response[a]).forEach((key) => {
         var newListElement = document.createElement('li')
         newListElement.classList.add('mdc-list-item')
         var newLeftSpan = document.createElement('h3')
